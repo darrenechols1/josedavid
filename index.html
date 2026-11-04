@@ -1,0 +1,307 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>jose david</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@400;500;700&display=swap">
+<style>
+/* Layout: one centered column like a single running lane; setup → run → results swap in place */
+:root{
+  --bg:#eef3f6; --surface:#ffffff; --ink:#14232d; --muted:#5a6b76; --line:#d3dee5;
+  --lane:#1f6f8b; --lane-ink:#ffffff; --pop:#ffcc33; --good:#1d8a4e; --bad:#c2410c;
+  --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body:"Lexend", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171d; --surface:#16232b; --ink:#e7eff3; --muted:#9db0bb; --line:#2a3a44;
+  --lane:#3aa6c9; --lane-ink:#06141a; --pop:#ffd75e; --good:#4cc887; --bad:#ff8a57; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e171d; --surface:#16232b; --ink:#e7eff3; --muted:#9db0bb; --line:#2a3a44;
+  --lane:#3aa6c9; --lane-ink:#06141a; --pop:#ffd75e; --good:#4cc887; --bad:#ff8a57; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.wrap{max-width:640px;margin:0 auto;display:grid;gap:20px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,6vw,40px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 span{background:var(--pop);color:#14232d;padding:0 .2em;border-radius:6px}
+.sub{color:var(--muted);margin:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:18px}
+.label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-weight:500;border:2px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 16px;cursor:pointer;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--lane);border-color:var(--lane);color:var(--lane-ink)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (max-width:460px){.modes{grid-template-columns:1fr}}
+.mode{font:inherit;text-align:left;border:2px solid var(--line);background:transparent;color:var(--ink);border-radius:12px;padding:12px;cursor:pointer;display:grid;gap:2px}
+.mode b{font-family:var(--display);font-size:18px}
+.mode small{color:var(--muted);font-size:13px;line-height:1.35}
+.mode[aria-pressed="true"]{border-color:var(--lane);box-shadow:inset 0 0 0 2px var(--lane)}
+.chip:focus-visible,.mode:focus-visible,.key:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--pop);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
+select,.name{font:inherit;width:100%;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink);min-height:44px}
+select:disabled{opacity:.55}
+.btn{font-family:var(--display);font-weight:800;font-size:22px;border:0;border-radius:12px;padding:14px 20px;cursor:pointer;background:var(--lane);color:var(--lane-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);font-size:18px}
+.note{color:var(--muted);font-size:14px;margin:0;line-height:1.5}
+/* run */
+.track{height:12px;border-radius:999px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:100%;background:var(--lane);transform-origin:left;transition:transform 1s linear}
+.track.steps i{transition:transform .25s ease}
+.track.hurry i{background:var(--bad)}
+.stats{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums;font-weight:700;font-size:20px}
+.stats small{display:block;font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.tries{display:flex;gap:6px;align-items:center;height:28px}
+.tries i{width:14px;height:14px;border-radius:50%;background:var(--lane)}
+.tries i.used{background:var(--line)}
+.problem{font-family:var(--display);font-weight:800;font-size:clamp(56px,16vw,104px);text-align:center;line-height:1;font-variant-numeric:tabular-nums;padding:12px 0 0;transition:color .15s}
+.problem.right{color:var(--good)} .problem.wrong{color:var(--bad)}
+.feedback{text-align:center;min-height:1.5em;margin:0;font-weight:500}
+.feedback.bad{color:var(--bad)} .feedback.good{color:var(--good)}
+.answer{font-family:var(--display);font-weight:800;font-size:44px;text-align:center;width:100%;border:3px solid var(--line);border-radius:12px;padding:8px;background:var(--bg);color:var(--ink);font-variant-numeric:tabular-nums}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.key{font:inherit;font-weight:700;font-size:26px;min-height:60px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.key:active{background:var(--line)}
+.key.go{background:var(--lane);border-color:var(--lane);color:var(--lane-ink)}
+.quit{justify-self:center;background:none;border:0;color:var(--muted);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:6px}
+/* results */
+.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500;margin:0}
+.big{font-family:var(--display);font-weight:800;font-size:clamp(64px,18vw,112px);line-height:1;margin:0;font-variant-numeric:tabular-nums}
+.result-top{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.result-top p{margin:0 0 10px;color:var(--muted)}
+.badge{display:inline-block;background:var(--pop);color:#14232d;font-weight:700;border-radius:999px;padding:4px 12px;font-size:14px}
+.badge.up{background:var(--good);color:var(--surface)}
+.misses{display:flex;flex-wrap:wrap;gap:8px}
+.misses span{border:2px solid var(--bad);color:var(--ink);border-radius:10px;padding:6px 10px;font-variant-numeric:tabular-nums;font-weight:500}
+.misses span b{color:var(--bad)}
+.misses span.ok{border-color:var(--good)}
+.misses span.second{border-style:dashed;border-color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .btn{flex:1 1 180px}
+@media (prefers-reduced-motion:reduce){.track i{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Minute Math <span>Sprint</span></h1>
+    <p class="sub">Check where you start. Practice. Then sprint.</p>
+  </header>
+
+  <section class="panel" id="setup">
+    <div>
+      <span class="label">Mode</span>
+      <div class="modes" id="modes">
+        <button class="mode" data-mode="baseline" aria-pressed="false"><b>Baseline</b><small>1 minute, all facts 0–12. Sets your starting score.</small></button>
+        <button class="mode" data-mode="practice" aria-pressed="false"><b>Practice</b><small>No timer. 2 tries per fact, then see the answer.</small></button>
+        <button class="mode" data-mode="sprint" aria-pressed="true"><b>Sprint</b><small>Beat the clock and compare to your baseline.</small></button>
+      </div>
+    </div>
+    <div>
+      <span class="label">Operation</span>
+      <div class="chips" id="ops">
+        <button class="chip" data-op="+" aria-pressed="false">Addition +</button>
+        <button class="chip" data-op="-" aria-pressed="false">Subtraction −</button>
+        <button class="chip" data-op="x" aria-pressed="true">Multiplication ×</button>
+        <button class="chip" data-op="/" aria-pressed="false">Division ÷</button>
+        <button class="chip" data-op="mix" aria-pressed="false">Mixed</button>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label class="label" for="name">Student name</label>
+        <input class="name" id="name" autocomplete="off" placeholder="Optional" maxlength="30">
+      </div>
+      <div>
+        <label class="label" for="focus">Fact focus</label>
+        <select id="focus">
+          <option value="all">All facts 0–12</option>
+          <option value="2">2s</option><option value="3">3s</option><option value="4">4s</option>
+          <option value="5">5s</option><option value="6">6s</option><option value="7">7s</option>
+          <option value="8">8s</option><option value="9">9s</option><option value="10">10s</option>
+          <option value="11">11s</option><option value="12">12s</option>
+        </select>
+      </div>
+      <div>
+        <label class="label" for="len" id="lenLabel">Sprint length</label>
+        <select id="len">
+          <option value="60" selected>1 minute</option>
+          <option value="30">30 seconds</option>
+          <option value="120">2 minutes</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="start">Start sprint</button>
+    <p class="note" id="note"></p>
+  </section>
+
+  <section class="panel" id="run" hidden>
+    <div class="track" id="track"><i id="bar"></i></div>
+    <div class="stats">
+      <div><small id="leftLabel">Time</small><span id="time">60</span></div>
+      <div id="triesBox" hidden><small>Tries left</small><div class="tries" id="tries"><i></i><i></i></div></div>
+      <div style="text-align:right"><small>Correct</small><span id="score">0</span></div>
+    </div>
+    <div class="problem" id="problem" aria-live="polite">7 × 8</div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+    <input class="answer" id="answer" inputmode="numeric" autocomplete="off" aria-label="Your answer">
+    <div class="pad" id="pad">
+      <button class="key">7</button><button class="key">8</button><button class="key">9</button>
+      <button class="key">4</button><button class="key">5</button><button class="key">6</button>
+      <button class="key">1</button><button class="key">2</button><button class="key">3</button>
+      <button class="key" data-k="del" aria-label="Delete">⌫</button><button class="key">0</button><button class="key go" data-k="go">Go</button>
+    </div>
+    <button class="quit" id="quit">Stop and see results</button>
+  </section>
+
+  <section class="panel" id="results" hidden>
+    <p class="kicker" id="resultKicker">Sprint result</p>
+    <div class="result-top">
+      <p class="big" id="final">0</p>
+      <p><span id="finalText">correct</span><br><span id="compare"></span></p>
+    </div>
+    <div>
+      <span class="label" id="missLabel">Facts to practice</span>
+      <div class="misses" id="misses"></div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="again">Go again</button>
+      <button class="btn ghost" id="change">Change settings</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PRACTICE_COUNT=20;
+let mode="sprint", op="x", t=null, left=60, total=60, score=0, tries=0, cur=null, missed=[], tryLeft=2, done=0, firstTry=0, locked=false;
+const opName={"+":"addition","-":"subtraction","x":"multiplication","/":"division","mix":"mixed"};
+const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const who=()=>($("name").value.trim().toLowerCase()||"_");
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const baseKey=()=>`base:${who()}:${op}`;
+const bestKey=()=>`best:${who()}:${op}:${$("focus").value}:${$("len").value}`;
+const getBase=()=>{const v=store.get(baseKey());return v===null?null:+v};
+function refresh(){
+  const isB=mode==="baseline", isP=mode==="practice";
+  $("focus").disabled=isB; if(isB)$("focus").value="all";
+  $("len").disabled=isB||isP; if(isB)$("len").value="60";
+  $("start").textContent=isB?"Start baseline":isP?"Start practice":"Start sprint";
+  const base=getBase(), who_=$("name").value.trim()||"this device";
+  let n="";
+  if(isB) n=base===null?`No baseline yet for ${who_} in ${opName[op]}.`:`Current ${opName[op]} baseline for ${who_}: ${base}. Taking it again replaces it.`;
+  else if(isP) n=`${PRACTICE_COUNT} facts, no clock. Miss twice and the answer is shown, then it moves on.`;
+  else{const b=+store.get(bestKey())||0;
+    n=(base===null?`No ${opName[op]} baseline yet for ${who_}. Take one first to track growth.`:`Baseline: ${base}.`)+(b?` Best sprint with these settings: ${b}.`:"");}
+  $("note").textContent=n;
+}
+function press(group,attr,el){document.querySelectorAll(group).forEach(x=>x.setAttribute("aria-pressed","false"));el.setAttribute("aria-pressed","true");}
+document.querySelectorAll("#modes .mode").forEach(c=>c.onclick=()=>{press("#modes .mode",0,c);mode=c.dataset.mode;refresh();});
+document.querySelectorAll("#ops .chip").forEach(c=>c.onclick=()=>{press("#ops .chip",0,c);op=c.dataset.op;refresh();});
+["focus","len","name"].forEach(id=>$(id).addEventListener("input",refresh));
+function make(){
+  const o=op==="mix"?["+","-","x","/"][r(0,3)]:op;
+  const f=$("focus").value; let a=r(0,12), b=f==="all"?r(0,12):+f;
+  if(Math.random()<.5)[a,b]=[b,a];
+  if(o==="+")return{t:`${a} + ${b}`,ans:a+b};
+  if(o==="-"){const s=a+b;return{t:`${s} − ${b}`,ans:a}}
+  if(o==="x")return{t:`${a} × ${b}`,ans:a*b};
+  let d=f==="all"?r(1,12):+f, q=r(0,12); if(!d)d=1;
+  return{t:`${d*q} ÷ ${d}`,ans:q};
+}
+function drawTries(){[...$("tries").children].forEach((d,i)=>d.classList.toggle("used",i>=tryLeft));}
+function next(){
+  let n;do{n=make()}while(cur&&n.t===cur.t);cur=n;tryLeft=2;drawTries();
+  $("problem").textContent=n.t;$("answer").value="";
+}
+function flash(ok){const p=$("problem");p.className="problem "+(ok?"right":"wrong");setTimeout(()=>p.className="problem",180);}
+function fb(txt,cls){$("feedback").textContent=txt;$("feedback").className="feedback "+(cls||"");}
+function submit(){
+  const v=$("answer").value.trim(); if(v===""||locked)return;
+  const ok=+v===cur.ans;
+  if(mode!=="practice"){
+    if(left<=0)return; tries++;
+    if(ok)score++; else missed.push(`${cur.t} = <b>${cur.ans}</b>`);
+    $("score").textContent=score; flash(ok); next(); $("answer").focus(); return;
+  }
+  // practice: 2 tries per fact
+  if(ok){
+    score++; if(tryLeft===2)firstTry++; else missed.push({t:cur.t,ans:cur.ans,second:true});
+    $("score").textContent=score; flash(true); fb(tryLeft===2?"Correct!":"Got it on the second try!","good");
+    advance();
+  }else{
+    tryLeft--; drawTries(); flash(false);
+    if(tryLeft>0){fb("Not quite. One more try.","bad");$("answer").value="";$("answer").focus();}
+    else{missed.push({t:cur.t,ans:cur.ans});fb(`The answer is ${cur.ans}.`,"bad");
+      $("problem").textContent=`${cur.t} = ${cur.ans}`;locked=true;$("answer").value="";
+      setTimeout(()=>{locked=false;advance(true);},1600);return;}
+  }
+}
+function advance(wait){
+  done++; $("time").textContent=`${Math.min(done+1,PRACTICE_COUNT)} / ${PRACTICE_COUNT}`;
+  $("bar").style.transform=`scaleX(${1-done/PRACTICE_COUNT})`;
+  if(done>=PRACTICE_COUNT){setTimeout(finish,wait?0:400);return;}
+  const go=()=>{next();$("answer").focus();};
+  if(wait)go(); else{locked=true;setTimeout(()=>{locked=false;fb("");go();},500);}
+}
+function start(){
+  score=0;tries=0;missed=[];cur=null;done=0;firstTry=0;locked=false;
+  const isP=mode==="practice";
+  $("score").textContent=0; fb("");
+  $("setup").hidden=true;$("results").hidden=true;$("run").hidden=false;
+  $("triesBox").hidden=!isP; $("track").classList.toggle("steps",isP);
+  $("track").classList.remove("hurry"); $("bar").style.transform="scaleX(1)";
+  clearInterval(t);
+  if(isP){$("leftLabel").textContent="Fact";$("time").textContent=`1 / ${PRACTICE_COUNT}`;}
+  else{
+    total=left=mode==="baseline"?60:+$("len").value;
+    $("leftLabel").textContent="Time";$("time").textContent=left;
+    t=setInterval(()=>{left--;$("time").textContent=left;
+      $("bar").style.transform=`scaleX(${left/total})`;
+      if(left<=10)$("track").classList.add("hurry");
+      if(left<=0)finish();},1000);
+  }
+  next(); $("answer").focus();
+}
+function finish(){
+  clearInterval(t); left=0; $("run").hidden=true; $("results").hidden=false;
+  const name=$("name").value.trim(), opn=opName[op];
+  $("final").textContent=score;
+  let cmp="";
+  if(mode==="practice"){
+    $("resultKicker").textContent=`Practice · ${opn}`+(name?` · ${name}`:"");
+    $("finalText").textContent=`correct out of ${PRACTICE_COUNT}`;
+    cmp=`${firstTry} on the first try`;
+    $("missLabel").textContent="Facts to keep practicing";
+    $("misses").innerHTML=missed.length?missed.map(m=>m.second?`<span class="second">${m.t} = <b>${m.ans}</b> · 2nd try</span>`:`<span>${m.t} = <b>${m.ans}</b></span>`).join(""):"<span class='ok'>Every fact on the first try. Nice work!</span>";
+  }else{
+    const prevBase=getBase();
+    $("finalText").textContent=`correct out of ${tries} tried`;
+    if(mode==="baseline"){
+      $("resultKicker").textContent=`Baseline · ${opn}`+(name?` · ${name}`:"");
+      store.set(baseKey(),score);
+      cmp=prevBase===null?'<span class="badge">Baseline saved</span>':`<span class="badge">Baseline updated</span> (was ${prevBase})`;
+    }else{
+      $("resultKicker").textContent=`Sprint · ${opn}`+(name?` · ${name}`:"");
+      if(prevBase!==null){const d=score-prevBase;cmp=d>0?`<span class="badge up">+${d} from baseline (${prevBase})</span>`:d===0?`Same as baseline (${prevBase})`:`${-d} below baseline (${prevBase})`;}
+      else cmp="No baseline yet";
+      const b=+store.get(bestKey())||0; if(score>b){store.set(bestKey(),score); if(b)cmp+=' <span class="badge">New best!</span>';}
+    }
+    $("missLabel").textContent="Facts to practice";
+    const uniq=[...new Set(missed)];
+    $("misses").innerHTML=uniq.length?uniq.map(m=>`<span>${m}</span>`).join(""):"<span class='ok'>None missed. Nice work!</span>";
+  }
+  $("compare").innerHTML=cmp;
+  $("again").textContent=mode==="baseline"?"Retake baseline":"Go again";
+  $("again").focus();
+}
+$("pad").onclick=e=>{const k=e.target.closest(".key");if(!k)return;const a=$("answer");
+  if(k.dataset.k==="del")a.value=a.value.slice(0,-1);else if(k.dataset.k==="go")submit();else if(a.value.length<4)a.value+=k.textContent;};
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();submit();}});
+$("answer").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4)});
+$("start").onclick=start;$("again").onclick=start;
+$("quit").onclick=finish;
+$("change").onclick=()=>{$("results").hidden=true;$("setup").hidden=false;refresh();};
+refresh();
+</script>
+
+</body></html>
